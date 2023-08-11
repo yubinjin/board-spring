@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.care.dbQuiz.repository.BoardRepository">
+	<insert id="write" parameterType="com.care.dbQuiz.dto.BoardDTO">
+		<selectKey order="BEFORE" keyProperty="bNumber" resultType="Integer">
+			SELECT nvl(max(bNumber), 0)+1 FROM board
+		</selectKey>
+	
+		INSERT INTO board VALUES(
+		#{writer}, #{title}, #{content},#{fileName}, #{cTime}, #{vCount}, #{bNumber})
+	</insert>
+	<select id="board" resultType="com.care.dbQuiz.dto.BoardDTO">
+		SELECT writer, title, cTime, vCount, bNumber FROM board ORDER BY bNumber DESC
+	</select>
+	<select id="view" resultType="com.care.dbQuiz.dto.BoardDTO">
+		SELECT * FROM board WHERE bNumber=#{bNumber}
+	</select>
+	<update id="vCountInc">
+		UPDATE board SET vCount=vCount+1 WHERE bNumber=#{bNumber}
+	</update>
+	<delete id="removeProc">
+		DELETE FROM board WHERE bNumber=#{bNumber}
+	</delete>
+	
+	<select id="modify" resultType="com.care.dbQuiz.dto.BoardDTO">
+		SELECT writer, title, content, bNumber FROM board WHERE bNumber=#{bNumber}
+	</select>
+	
+	<update id="modifyProc" parameterType="com.care.dbQuiz.dto.BoardDTO">
+		UPDATE board SET title=#{title}, content=#{content} WHERE bNumber=#{bNumber}
+	</update>
+</mapper>
